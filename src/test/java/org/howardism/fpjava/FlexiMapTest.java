@@ -39,7 +39,7 @@ import org.junit.Test;
  * <a href="http://svn.apache.org/repos/asf/commons/proper/functor/trunk/src/test/java/org/apache/commons/functor/example/FlexiMapExample.java">
  *   this file
  * </a>, but implemented without the Apache
- * <a href="">
+ * <a href="http://commons.apache.org/functor/index.html">
  *   Commons Functor library</a>.
  * </p><p>  
  * <b>Note:</b> While I find the Functor library useful, it seemed overly
