@@ -11,11 +11,11 @@ Optional Parameters
 -------------------
 
 In order to get rid of the dreaded null pointer exceptions, you can
-have a function accept parameters of type `Option`. Only two classes
+have a function accept parameters of type [Option][]. Only two classes
 implement this interface: `None` and `Some`.
 
- * `None`: returns `false` when `present()` function is called.
- * `Some`: returns `true` when `present()` called, and returns results from `values()`
+ * [None][]: returns `false` when `present()` function is called.
+ * [Some][]: returns `true` when `present()` called, and returns results from `values()`
 
 We can then have a function like:
  
@@ -63,9 +63,14 @@ Composition
 To demonstrate the concept of creating specialized versions of a `Map` through
 *composition* (instead of inheritance), we took [these unit tests][1] from
 the Apache [Commons Functor library][2], but instead of using their libraries,
-we used our own `Closure` classes. Same principle, different approach.
+we used our own `Closure` classes (see [these this code][Test]).
+Same principle, different approach.
 
   [1]: http://svn.apache.org/repos/asf/commons/proper/functor/trunk/src/test/java/org/apache/commons/functor/example/FlexiMapExample.java
   [2]: http://commons.apache.org/functor/index.html
   
   [Closure]: /howardabrams/fp-for-java/blob/master/src/main/java/org/howardism/fpjava/Closure.java
+  [Option]: /howardabrams/fp-for-java/blob/master/src/main/java/org/howardism/fpjava/Option.java
+  [None]: /howardabrams/fp-for-java/blob/master/src/main/java/org/howardism/fpjava/None.java
+  [Some]: /howardabrams/fp-for-java/blob/master/src/main/java/org/howardism/fpjava/Some.java
+  [Test]: /howardabrams/fp-for-java/blob/master/src/test/java/org/howardism/fpjava/FlexiMapTest.java
