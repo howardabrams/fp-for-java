@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package org.howardism.fpjava;
+package org.howardism.options2;
 
 /**
  * In order to get rid of <code>null</code>s in your code, think of what a null
@@ -36,7 +36,8 @@ public interface Option<T>
 	
 	/**
 	 * Returns the value stored in this parameter.
+	 * @param defaultValue If no value given, return this value.
 	 * @return the value stored in this parameter.
 	 */
-	public T value();
+	public T value(T defaultValue);
 }

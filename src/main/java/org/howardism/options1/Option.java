@@ -17,25 +17,26 @@
  * limitations under the License.
  */
 
-package org.howardism.fpjava;
-
-import org.howardism.options1.Option;
-import org.howardism.options1.Some;
+package org.howardism.options1;
 
 /**
- * A way to easily create a closure that works better than a
- * simple anonymous class.
+ * In order to get rid of <code>null</code>s in your code, think of what a null
+ * really means... an optional value. So why not call them as such? Two classes
+ * implement this {@link Some} and {@link None}.
  * 
  * @author Howard Abrams (www.howardabrams.com)
  */
-public abstract class ClosureOption implements Closure {
-
+public interface Option<T>
+{
 	/**
-	 * Return this new object wrapped up in an {@link Option}.
-	 * @return an {@link Option} containing the current instance.
+	 * Returns <code>true</code> if this option has a value.
+	 * @return <code>true</code> if {@link #value} will return a value, <code>false</code> otherwise.
 	 */
-	public Option<Closure> getOption() {
-		return new Some<Closure>( this );
-	}
-
+	public boolean present();
+	
+	/**
+	 * Returns the value stored in this parameter.
+	 * @return the value stored in this parameter.
+	 */
+	public T value();
 }

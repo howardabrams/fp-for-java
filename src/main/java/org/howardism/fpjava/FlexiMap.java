@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.howardism.options1.Option;
+
 /**
  * How can one Map implementation support all these behaviors?
  * Using functors and composition, of course.
@@ -45,11 +47,18 @@ public class FlexiMap implements Map<Object, Object> {
      * and one that's used to transforms objects being retrieved
      * from the map.
      */
-    public FlexiMap(Option<Closure> putfn, Option<Closure> getfn) {
+    public FlexiMap(Option<Closure> putfn, Option<Closure> getfn)
+    {
     	if(putfn.present())
     		onPut = putfn.value();
+    	else
+    		onPut = null;
+    	
     	if(getfn.present())
     		onGet = getfn.value();
+    	else
+    		onGet = null;
+    	
         proxiedMap = new HashMap<Object, Object>();
     }
 
@@ -76,7 +85,7 @@ public class FlexiMap implements Map<Object, Object> {
      * we'll invoke onGet here as well.
      */
     public Object put(Object key, Object value) {
-        Object oldvalue = proxiedMap.get(key);
+        final Object oldvalue = proxiedMap.get(key);
         if (onPut != null)
         	proxiedMap.put(key, onPut.apply(oldvalue, value));
         else
@@ -133,8 +142,8 @@ public class FlexiMap implements Map<Object, Object> {
     }
 
     // private BinaryFunction<Object, Object, Object> onPut = null;
-    private Closure onPut = null;
+    final private Closure onPut;
     // private BinaryFunction<Object, Object, Object> onGet = null;
-    private Closure onGet = null;
-    private Map<Object, Object> proxiedMap = null;
+    final private Closure onGet;
+    final private Map<Object, Object> proxiedMap;
 }

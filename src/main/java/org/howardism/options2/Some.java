@@ -16,26 +16,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.howardism.fpjava;
-
-import org.howardism.options1.Option;
-import org.howardism.options1.Some;
+package org.howardism.options2;
 
 /**
- * A way to easily create a closure that works better than a
- * simple anonymous class.
+ * An optional parameter that contains an actual value.
  * 
  * @author Howard Abrams (www.howardabrams.com)
  */
-public abstract class ClosureOption implements Closure {
+public class Some<T> implements Option<T>
+{
+	final T value;
 
 	/**
-	 * Return this new object wrapped up in an {@link Option}.
-	 * @return an {@link Option} containing the current instance.
+	 * Creating a <code>Some</code> instance requires a value
+	 * given at construction time.
+	 * @param value A value of some sort.
 	 */
-	public Option<Closure> getOption() {
-		return new Some<Closure>( this );
+	public Some(T value) {
+		this.value = value;
+	}
+	
+	/**
+	 * If the value originally assigned to this parameter is
+	 * not <code>null</code>, this returns <code>true</code>.
+	 * @return <code>true</code> if a value has been assigned,
+	 *         <code>false</code> otherwise.
+	 * @see org.howardism.options1.Option#value()
+	 */
+	public boolean present() {
+		return (value != null);
+	}
+
+	/**
+	 * Returns the value originally assign to this option.
+	 * Any default value parameter given is ignored. 
+	 * @see org.howardism.options1.Option#value()
+	 */
+	public T value(T ignoreDefault) {
+		return value;
 	}
 
 }

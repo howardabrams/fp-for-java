@@ -16,43 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.howardism.fpjava;
+
+package org.howardism.options;
+
+import static org.junit.Assert.*;
+
+import org.howardism.options2.None;
+import org.howardism.options2.Option;
+import org.howardism.options2.Some;
+import org.junit.Test;
 
 /**
- * An optional parameter that contains an actual value.
+ * Let's test and show examples of using the better version
+ * of the {@link Option} interface, including both the
+ * {@link None} and {@link Some} classes.
  * 
  * @author Howard Abrams (www.howardabrams.com)
  */
-public class Some<T> implements Option<T>
-{
-	final T value;
+public class SomeTests {
 
-	/**
-	 * Creating a <code>Some</code> instance requires a value
-	 * given at construction time.
-	 * @param value A value of some sort.
-	 */
-	public Some(T value) {
-		this.value = value;
-	}
-	
-	/**
-	 * If the value originally assigned to this parameter is
-	 * not <code>null</code>, this returns <code>true</code>.
-	 * @return <code>true</code> if a value has been assigned,
-	 *         <code>false</code> otherwise.
-	 * @see org.howardism.fpjava.Option#value()
-	 */
-	public boolean present() {
-		return (value != null);
+	@Test
+	public void testNoneDefault() {
+		assertEquals(1, someFunc( new None<Integer>() ) );
 	}
 
-	/**
-	 * Returns the value originally assign to this option.
-	 * @see org.howardism.fpjava.Option#value()
-	 */
-	public T value() {
-		return value;
+	@Test
+	public void testSomeDefault() {
+		assertEquals(6, someFunc( new Some<Integer>(5) ) );
 	}
 
+	public int someFunc(Option<Integer> p1) {
+		return p1.value(0) + 1;
+	}
 }

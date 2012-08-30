@@ -16,46 +16,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.howardism.fpjava;
+package org.howardism.options1;
 
 /**
- * A parameter that isn't set is called <b>None</b> (see also the {@link Some}
- * class.
+ * An optional parameter that contains an actual value.
  * 
  * @author Howard Abrams (www.howardabrams.com)
- * @param <T> The type the optional parameter should expect.
  */
-public class None<T> implements Option<T>
+public class Some<T> implements Option<T>
 {
+	final T value;
+
 	/**
-	 * This singleton is safe to use and pass around.
+	 * Creating a <code>Some</code> instance requires a value
+	 * given at construction time.
+	 * @param value A value of some sort.
 	 */
-	public static None<Object> noparameter = new None<Object>();
-	
-	/**
-	 * Gets an instance of this class in case we really want to pretend were still
-	 * living in an imperative world.
-	 * @return The <code>noparameter</code> singleton instance.
-	 */
-	public static None<Closure> noclosure() {
-		return new None<Closure>();
+	public Some(T value) {
+		this.value = value;
 	}
 	
 	/**
-	 * Always returns <code>false</code>, since this class means no value available.
-	 * @see org.howardism.fpjava.Option#present()
+	 * If the value originally assigned to this parameter is
+	 * not <code>null</code>, this returns <code>true</code>.
+	 * @return <code>true</code> if a value has been assigned,
+	 *         <code>false</code> otherwise.
+	 * @see org.howardism.options1.Option#value()
 	 */
 	public boolean present() {
-		return false;
+		return (value != null);
 	}
 
 	/**
-	 * Always returns <code>null</code> since no value is available.
-	 * @see org.howardism.fpjava.Option#value()
+	 * Returns the value originally assign to this option.
+	 * @see org.howardism.options1.Option#value()
 	 */
 	public T value() {
-		return null;
+		return value;
 	}
 
 }
