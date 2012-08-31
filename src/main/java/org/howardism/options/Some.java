@@ -47,7 +47,6 @@ public class Some<T> implements Option<T>
      *         <code>false</code> otherwise.
      * @see org.howardism.options.Option#get()
      */
-    @Override
     public boolean isPresent() {
         return value != null;
     }
@@ -58,7 +57,6 @@ public class Some<T> implements Option<T>
      * 
      * @see org.howardism.options.Option#get()
      */
-    @Override
     public T get(final T ignoredValue) {
         return value;
     }
@@ -68,7 +66,6 @@ public class Some<T> implements Option<T>
      * 
      * @see org.howardism.options.Option#get()
      */
-    @Override
     public T get() {
         return value;
     }

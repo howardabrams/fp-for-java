@@ -156,7 +156,6 @@ public class FlexiMapTest
 
     private class NoMoreNulls extends ClosureOption {
 
-        @Override
         public Object apply(final Object... objects) {
             // All closures used for 'putFn' will have two parameters:
             //    0: old value
@@ -203,7 +202,6 @@ public class FlexiMapTest
             this.defaultValue = value;
         }
 
-        @Override
         public Object apply(final Object... objects) {
             // All closures used for 'getFn' will have two parameters:
             //    0: key
@@ -248,7 +246,6 @@ public class FlexiMapTest
             this.constraint = c;
         }
 
-        @Override
         public Object apply(final Object... objects) {
             // All closures used for 'putFn' will have two parameters:
             //    0: old value
@@ -273,7 +270,6 @@ public class FlexiMapTest
      * with a key adds to that collection, rather than overwriting the
      * previous value:
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testMultiMap() {
         final Map<Object, Object> map = makeMultiMap();
@@ -315,21 +311,19 @@ public class FlexiMapTest
     }
 
     class MultiMapPut extends ClosureOption {
-        
-        @Override
         @SuppressWarnings("unchecked")
         public Object apply(final Object... objects) {
             // All closures used for 'putFn' will have two parameters:
             //    0: The map for the current key (or null if new)
             //    1: The value to store...
             assert objects.length == 2;
-            
+
             final List<Object> values;
             if (objects[0] == null)
                 values = new ArrayList<Object>();
             else
                 values = (List<Object>) objects[0];
-            
+
             values.add( objects[1] );
             return values;
         }
@@ -360,20 +354,19 @@ public class FlexiMapTest
     }
 
     class MultiStringPut extends ClosureOption {
-        
-        @Override
+
         public Object apply(final Object... objects) {
             // All closures used for 'putFn' will have two parameters:
             //    0: The string of values (or null if empty)
             //    1: The value to store...
             assert objects.length == 2;
-            
+
             final String slist;
             if (objects[0] == null)          // First time in, we
                 slist = (String) objects[1]; // just store the value
             else                             // Next time, we append
                 slist = (String) objects[0] + ", " + (String) objects[1];
-            
+
             return slist;
         }
 

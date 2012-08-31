@@ -42,7 +42,6 @@ public class None<T> implements Option<T>
      * 
      * @see org.howardism.options.Option#isPresent()
      */
-    @Override
     public boolean isPresent() {
         return false;
     }
@@ -52,7 +51,6 @@ public class None<T> implements Option<T>
      * 
      * @see org.howardism.options.Option#get()
      */
-    @Override
     public T get(final T defaultValue) {
         return defaultValue;
     }
@@ -63,7 +61,6 @@ public class None<T> implements Option<T>
      * 
      * @see org.howardism.options.Option#get()
      */
-    @Override
     public T get() {
         return null;
     }
