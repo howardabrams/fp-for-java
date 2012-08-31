@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package org.howardism.options2;
+package org.howardism.options;
 
 /**
  * In order to get rid of <code>null</code>s in your code, think of what a null
@@ -32,12 +32,19 @@ public interface Option<T>
 	 * Returns <code>true</code> if this option has a value.
 	 * @return <code>true</code> if {@link #value} will return a value, <code>false</code> otherwise.
 	 */
-	public boolean present();
+	public boolean isPresent();
 	
 	/**
-	 * Returns the value stored in this parameter.
-	 * @param defaultValue If no value given, return this value.
+	 * Returns the value stored in this parameter, or if not
+	 * set, return the default value.
 	 * @return the value stored in this parameter.
 	 */
-	public T value(T defaultValue);
+	public T get(T defaultValue);
+
+	/**
+	 * Returns the value stored in this parameter, or if not
+	 * set, returns <code>null</code>.
+	 * @return the value stored in this parameter.
+	 */
+	public T get();
 }

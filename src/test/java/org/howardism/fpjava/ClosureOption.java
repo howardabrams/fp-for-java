@@ -19,8 +19,8 @@
 
 package org.howardism.fpjava;
 
-import org.howardism.options1.Option;
-import org.howardism.options1.Some;
+import org.howardism.options.Option;
+import org.howardism.options.Some;
 
 /**
  * A way to easily create a closure that works better than a

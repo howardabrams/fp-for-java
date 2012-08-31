@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package org.howardism.options2;
+package org.howardism.options;
 
 import org.howardism.fpjava.Closure;
 
@@ -46,18 +46,37 @@ public class None<T> implements Option<T>
 	
 	/**
 	 * Always returns <code>false</code>, since this class means no value available.
-	 * @see org.howardism.options1.Option#present()
+	 * @see org.howardism.options.Option#isPresent()
 	 */
-	public boolean present() {
+	public boolean isPresent() {
 		return false;
 	}
 
 	/**
 	 * Always returns the default value since no other value is available.
-	 * @see org.howardism.options1.Option#value()
+	 * @see org.howardism.options.Option#get()
 	 */
-	public T value(T defaultValue) {
+	public T get(T defaultValue) {
 		return defaultValue;
 	}
 
+	/**
+	 * Always returns <code>null</code> since no other value is available.
+	 * This is dangerous, and should never be called.
+	 * @see org.howardism.options.Option#get()
+	 */
+	public T get() {
+		return null;
+	}
+	
+	/**
+	 * Convenience object that can be easily used in function calls.
+	 */
+	public static None<Integer> noInteger = new None<Integer>();
+	public static None<Double>  noDouble  = new None<Double>();
+	public static None<Float>   noFloat   = new None<Float>();
+	public static None<Short>   noShort   = new None<Short>();
+	public static None<String>  noString  = new None<String>();
+	public static None<Object>  noObject  = new None<Object>();
+	public static None<Closure> noClosure = new None<Closure>();
 }

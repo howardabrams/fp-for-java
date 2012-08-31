@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.howardism.options1.Option;
+import org.howardism.options.Option;
 
 /**
  * How can one Map implementation support all these behaviors?
@@ -49,16 +49,8 @@ public class FlexiMap implements Map<Object, Object> {
      */
     public FlexiMap(Option<Closure> putfn, Option<Closure> getfn)
     {
-    	if(putfn.present())
-    		onPut = putfn.value();
-    	else
-    		onPut = null;
-    	
-    	if(getfn.present())
-    		onGet = getfn.value();
-    	else
-    		onGet = null;
-    	
+    	onPut = putfn.get(null);
+    	onGet = getfn.get(null);
         proxiedMap = new HashMap<Object, Object>();
     }
 

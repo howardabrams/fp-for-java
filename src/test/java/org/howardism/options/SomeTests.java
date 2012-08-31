@@ -21,9 +21,9 @@ package org.howardism.options;
 
 import static org.junit.Assert.*;
 
-import org.howardism.options2.None;
-import org.howardism.options2.Option;
-import org.howardism.options2.Some;
+import org.howardism.options.None;
+import org.howardism.options.Option;
+import org.howardism.options.Some;
 import org.junit.Test;
 
 /**
@@ -46,6 +46,6 @@ public class SomeTests {
 	}
 
 	public int someFunc(Option<Integer> p1) {
-		return p1.value(0) + 1;
+		return p1.get(0) + 1;
 	}
 }

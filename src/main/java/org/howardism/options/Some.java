@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.howardism.options1;
+package org.howardism.options;
 
 /**
  * An optional parameter that contains an actual value.
@@ -41,18 +41,26 @@ public class Some<T> implements Option<T>
 	 * not <code>null</code>, this returns <code>true</code>.
 	 * @return <code>true</code> if a value has been assigned,
 	 *         <code>false</code> otherwise.
-	 * @see org.howardism.options1.Option#value()
+	 * @see org.howardism.options.Option#get()
 	 */
-	public boolean present() {
+	public boolean isPresent() {
 		return (value != null);
 	}
 
 	/**
 	 * Returns the value originally assign to this option.
-	 * @see org.howardism.options1.Option#value()
+	 * Any default value parameter given is ignored. 
+	 * @see org.howardism.options.Option#get()
 	 */
-	public T value() {
+	public T get(T ignoredValue) {
 		return value;
 	}
 
+	/**
+	 * Returns the value originally assign to this option.
+	 * @see org.howardism.options.Option#get()
+	 */
+	public T get() {
+		return value;
+	}
 }
