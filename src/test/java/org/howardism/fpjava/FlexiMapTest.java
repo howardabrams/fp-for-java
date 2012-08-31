@@ -42,7 +42,7 @@ import org.junit.Test;
  * </a>, but implemented without the Apache
  * <a href="http://commons.apache.org/functor/index.html">
  *   Commons Functor library</a>.
- * </p><p>  
+ * </p><p>
  * <b>Note:</b> While I find the Functor library useful, it seemed overly
  * complicated for initial discussion and teaching functional programming
  * concepts.
@@ -52,35 +52,34 @@ import org.junit.Test;
  */
 public class FlexiMapTest
 {
-	/*
-	 * In a "test first" style, let's first specify the Map behaviour we'd like
-	 * to implement via unit tests.
-	 * 
-	 * First, let's review the basic Map functionality.
-	 * 
+    /* In a "test first" style, let's first specify the Map behaviour we'd like
+     * to implement via unit tests.
+     *
+     * First, let's review the basic Map functionality.
+     *
      * The basic Map interface lets one associate keys and values:
      */
     @Test
     public void testBasicMap() {
         /* (We'll define these make*Map functions below.) */
-        Map<Object, Object> map = makeBasicMap();
-        Object key = "key";
-        Object value = new Integer(3);
+        final Map<Object, Object> map = makeBasicMap();
+        final Object key = "key";
+        final Object value = new Integer(3);
         map.put(key,value);
         assertEquals(value, map.get(key) );
     }
 
     private Map<Object, Object> makeBasicMap() {
-		return new FlexiMap( None.noclosure(), None.noclosure() );
-	}
+        return new FlexiMap( None.noClosure, None.noClosure );
+    }
 
-	/*
+    /*
      * If there is no value associated with a key,
      * the basic Map will return null for that key:
      */
     @Test
     public void testBasicMapReturnsNullForMissingKey() {
-        Map<Object, Object> map = makeBasicMap();
+        final Map<Object, Object> map = makeBasicMap();
         assertNull( map.get("key") );
     }
 
@@ -90,9 +89,9 @@ public class FlexiMapTest
      */
     @Test
     public void testBasicMapAllowsNull() {
-        Map<Object, Object> map = makeBasicMap();
-        Object key = "key";
-        Object value = null;
+        final Map<Object, Object> map = makeBasicMap();
+        final Object key = "key";
+        final Object value = null;
         map.put(key,value);
         assertNull( map.get(key) );
     }
@@ -103,7 +102,7 @@ public class FlexiMapTest
      */
     @Test
     public void testBasicMapAllowsMultipleTypes() {
-        Map<Object, Object> map = makeBasicMap();
+        final Map<Object, Object> map = makeBasicMap();
         map.put("key-1","value-1");
         map.put(new Integer(2),"value-2");
         map.put("key-3",new Integer(3));
@@ -122,7 +121,7 @@ public class FlexiMapTest
      */
     @Test
     public void testBasicMapStoresOnlyOneValuePerKey() {
-        Map<Object, Object> map = makeBasicMap();
+        final Map<Object, Object> map = makeBasicMap();
 
         assertNull( map.put("key","value-1") );
         assertEquals("value-1", map.get("key") );
@@ -132,48 +131,46 @@ public class FlexiMapTest
 
     /*
      * Now let's look at some specializations of the Map behavior.
-     */
-
-    /*
+     *
      * One common specialization is to forbid null values,
      * like our old friend Hashtable:
      */
     @Test
     public void testForbidNull() {
-        Map<Object, Object> map = makeNullForbiddenMap();
+        final Map<Object, Object> map = makeNullForbiddenMap();
 
         map.put("key","value");
         map.put("key2", new Integer(2) );
         try {
             map.put("key3",null);
             fail("Expected NullPointerException");
-        } catch(NullPointerException e) {
+        } catch(final NullPointerException e) {
             // expected
         }
     }
 
     private Map<Object, Object> makeNullForbiddenMap() {
-		return new FlexiMap( new NoMoreNulls().getOption(),  /* put */ 
-							 None.noclosure() );             /* get */
-	}
+        return new FlexiMap( new NoMoreNulls().asOption(),  /* put */
+                             None.noClosure );              /* get */
+    }
 
     private class NoMoreNulls extends ClosureOption {
 
-		public Object apply(Object... objects) {
-			// All closures used for 'putFn' will have two parameters:
-			//    0: old value
-			//    1: new value
-			assert objects.length == 2;
-			
-			if (objects[1] == null)
-				throw new NullPointerException("This map implementation doesn't allow nulls.");
-			else
-				return objects[1];
-		}
-    	
+        @Override
+        public Object apply(final Object... objects) {
+            // All closures used for 'putFn' will have two parameters:
+            //    0: old value
+            //    1: new value
+            assert objects.length == 2;
+
+            if (objects[1] == null)
+                throw new NullPointerException("This map implementation doesn't allow nulls.");
+            else
+                return objects[1];
+        }
     }
-    
-	/*
+
+    /*
      * Alternatively, we may want to provide a default
      * value to return when null is associated with some
      * key. (This might be useful, for example, when the Map
@@ -182,7 +179,7 @@ public class FlexiMapTest
      */
     @Test
     public void testNullDefaultsToZero() {
-        Map<Object, Object> map = makeDefaultValueForNullMap(new Integer(0));
+        final Map<Object, Object> map = makeDefaultValueForNullMap(new Integer(0));
         /*
          * We expect 0 when no value has been associated with "key".
          */
@@ -194,78 +191,80 @@ public class FlexiMapTest
         assertEquals( new Integer(0), map.get("key") );
     }
 
-    private Map<Object, Object> makeDefaultValueForNullMap(Integer integer) {
-		return new FlexiMap( None.noclosure(),                               // put 
-					         new DefaultValueForNull(integer).getOption() ); // get
-	}
+    private Map<Object, Object> makeDefaultValueForNullMap(final Integer integer) {
+        return new FlexiMap( None.noClosure,                                // put
+                             new DefaultValueForNull(integer).asOption() ); // get
+    }
 
     private class DefaultValueForNull extends ClosureOption {
-    	final Object defaultValue;
-    	
-    	public DefaultValueForNull(Object value) {
-    		this.defaultValue = value;
-		}
-    	
-		public Object apply(Object... objects) {
-			// All closures used for 'getFn' will have two parameters:
-			//    0: key
-			//    1: value currently stored in the map
-			assert objects.length == 2;
-			
-			if (objects[1] == null)
-				return defaultValue;
-			else
-				return objects[1];
-		}
+        final Object defaultValue;
+
+        public DefaultValueForNull(final Object value) {
+            this.defaultValue = value;
+        }
+
+        @Override
+        public Object apply(final Object... objects) {
+            // All closures used for 'getFn' will have two parameters:
+            //    0: key
+            //    1: value currently stored in the map
+            assert objects.length == 2;
+
+            if (objects[1] == null)
+                return defaultValue;
+            else
+                return objects[1];
+        }
 
     }
 
     
-	/*
+    /*
      * Another common specialization is to constrain the type of values
      * that may be stored in the Map:
      */
     @Test
     public void testIntegerValuesOnly() {
-        Map<Object, Object> map = makeTypeConstrainedMap(Integer.class);
+        final Map<Object, Object> map = makeTypeConstrainedMap(Integer.class);
         map.put("key", new Integer(2));
         assertEquals( new Integer(2), map.get("key") );
         try {
             map.put("key2","value");
             fail("Expected ClassCastException");
-        } catch(ClassCastException e) {
+        } catch(final ClassCastException e) {
             // expected
         }
     }
 
-    private Map<Object, Object> makeTypeConstrainedMap(Class<Integer> class1) {
-		return new FlexiMap( new ConstrainedPut(class1).getOption(), // put
-				             None.noclosure() );                     // get
-	}
+    private Map<Object, Object> makeTypeConstrainedMap(final Class<Integer> class1) {
+        return new FlexiMap( new ConstrainedPut(class1).asOption(), // put
+                             None.noClosure );                      // get
+    }
 
-	class ConstrainedPut extends ClosureOption {
-		final Class<?> constraint;
-		
-		public ConstrainedPut(Class<Integer> c) {
-			this.constraint = c;
-		}
-		
-		public Object apply(Object... objects) {
-			// All closures used for 'putFn' will have two parameters:
-			//    0: old value
-			//    1: new value
-			assert objects.length == 2;
-			
-			if (objects[1].getClass() != constraint)
-				throw new ClassCastException("This map implementation only allows values of type: "+constraint.getName());
-			else
-				return objects[1];
-		}
+    class ConstrainedPut extends ClosureOption {
+        final Class<?> constraint;
 
-	}
+        public ConstrainedPut(final Class<Integer> c) {
+            this.constraint = c;
+        }
+
+        @Override
+        public Object apply(final Object... objects) {
+            // All closures used for 'putFn' will have two parameters:
+            //    0: old value
+            //    1: new value
+            assert objects.length == 2;
+
+            if (objects[1].getClass() != constraint)
+                throw new ClassCastException("This map implementation only allows values of type: "+constraint.getName());
+            else
+                return objects[1];
+        }
+
+    }
 
 
-	/*
+    /*
      * A more interesting specialization is that used by the
      * Apache Commons Collections MultiMap class, which allows
      * one to associate multiple values with each key.  The put
@@ -277,12 +276,12 @@ public class FlexiMapTest
     @SuppressWarnings("unchecked")
     @Test
     public void testMultiMap() {
-        Map<Object, Object> map = makeMultiMap();
+        final Map<Object, Object> map = makeMultiMap();
 
         map.put("key", "value 1");
 
         {
-            Collection<Object> result = (Collection<Object>)(map.get("key"));
+            final Collection<Object> result = (Collection<Object>)map.get("key");
             assertEquals(1,result.size());
             assertEquals("value 1", result.iterator().next());
         }
@@ -290,9 +289,9 @@ public class FlexiMapTest
         map.put("key", "value 2");
 
         {
-            Collection<Object> result = (Collection<Object>)(map.get("key"));
+            final Collection<Object> result = (Collection<Object>)map.get("key");
             assertEquals(2,result.size());
-            Iterator<Object> iter = result.iterator();
+            final Iterator<Object> iter = result.iterator();
             assertEquals("value 1", iter.next());
             assertEquals("value 2", iter.next());
         }
@@ -300,9 +299,9 @@ public class FlexiMapTest
         map.put("key", "value 3");
 
         {
-            Collection<Object> result = (Collection<Object>)(map.get("key"));
+            final Collection<Object> result = (Collection<Object>)map.get("key");
             assertEquals(3,result.size());
-            Iterator<Object> iter = result.iterator();
+            final Iterator<Object> iter = result.iterator();
             assertEquals("value 1", iter.next());
             assertEquals("value 2", iter.next());
             assertEquals("value 3", iter.next());
@@ -311,32 +310,33 @@ public class FlexiMapTest
     }
 
     private Map<Object, Object> makeMultiMap() {
-		return new FlexiMap( new MultiMapPut().getOption(), // put
-	                         None.noclosure() );            // get
-	}
+        return new FlexiMap( new MultiMapPut().asOption(), // put
+                             None.noClosure );              // get
+    }
 
-	class MultiMapPut extends ClosureOption {
-		
-		@SuppressWarnings("unchecked")
-		public Object apply(Object... objects) {
-			// All closures used for 'putFn' will have two parameters:
-			//    0: The map for the current key (or null if new)
-			//    1: The value to store...
-			assert objects.length == 2;
-			
-			final List<Object> values;
-			if (objects[0] == null)
-				values = new ArrayList<Object>();
-			else
-				values = (List<Object>) objects[0];
-			
-			values.add( objects[1] );
-			return values;
-		}
+    class MultiMapPut extends ClosureOption {
+        
+        @Override
+        @SuppressWarnings("unchecked")
+        public Object apply(final Object... objects) {
+            // All closures used for 'putFn' will have two parameters:
+            //    0: The map for the current key (or null if new)
+            //    1: The value to store...
+            assert objects.length == 2;
+            
+            final List<Object> values;
+            if (objects[0] == null)
+                values = new ArrayList<Object>();
+            else
+                values = (List<Object>) objects[0];
+            
+            values.add( objects[1] );
+            return values;
+        }
 
-	}
+    }
 
-	/*
+    /*
      * Here's another variation on the MultiMap theme.
      * Rather than adding elements to a Collection, let's
      * concatenate String values together, delimited by commas.
@@ -345,7 +345,7 @@ public class FlexiMapTest
      */
     @Test
     public void testStringConcatMap() {
-        Map<Object, Object> map = makeStringConcatMap();
+        final Map<Object, Object> map = makeStringConcatMap();
         map.put("key", "value 1");
         assertEquals("value 1",map.get("key"));
         map.put("key", "value 2");
@@ -354,28 +354,29 @@ public class FlexiMapTest
         assertEquals("value 1, value 2, value 3",map.get("key"));
     }
 
-	private Map<Object, Object> makeStringConcatMap() {
-		return new FlexiMap( new MultiStringPut().getOption(), // put
-                             None.noclosure() );               // get
-	}
+    private Map<Object, Object> makeStringConcatMap() {
+        return new FlexiMap( new MultiStringPut().asOption(), // put
+                             None.noClosure );                 // get
+    }
 
-	class MultiStringPut extends ClosureOption {
-		
-		public Object apply(Object... objects) {
-			// All closures used for 'putFn' will have two parameters:
-			//    0: The string of values (or null if empty)
-			//    1: The value to store...
-			assert objects.length == 2;
-			
-			final String slist;
-			if (objects[0] == null)          // First time in, we
-				slist = (String) objects[1]; // just store the value
-			else                             // Next time, we append
-				slist = (String) objects[0] + ", " + (String) objects[1];
-			
-			return slist;
-		}
+    class MultiStringPut extends ClosureOption {
+        
+        @Override
+        public Object apply(final Object... objects) {
+            // All closures used for 'putFn' will have two parameters:
+            //    0: The string of values (or null if empty)
+            //    1: The value to store...
+            assert objects.length == 2;
+            
+            final String slist;
+            if (objects[0] == null)          // First time in, we
+                slist = (String) objects[1]; // just store the value
+            else                             // Next time, we append
+                slist = (String) objects[0] + ", " + (String) objects[1];
+            
+            return slist;
+        }
 
-	}
+    }
 
 }

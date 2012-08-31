@@ -47,13 +47,11 @@ public class FlexiMap implements Map<Object, Object> {
      * and one that's used to transforms objects being retrieved
      * from the map.
      */
-    public FlexiMap(Option<Closure> putfn, Option<Closure> getfn)
-    {
-    	onPut = putfn.get(null);
-    	onGet = getfn.get(null);
+    public FlexiMap(final Option<Closure> putfn, final Option<Closure> getfn) {
+        onPut = putfn;
+        onGet = getfn;
         proxiedMap = new HashMap<Object, Object>();
     }
-
 
     /*
      * The arguments to our "onGet" function will be the
@@ -61,11 +59,12 @@ public class FlexiMap implements Map<Object, Object> {
      * underlying Map.  We'll return whatever the function
      * returns.
      */
-    public Object get(Object key) {
-    	if (onGet != null)
-    		return onGet.apply( key, proxiedMap.get(key) );
-    	else
-    		return proxiedMap.get(key);
+    @Override
+    public Object get(final Object key) {
+        if (onGet.isPresent())
+            return onGet.get().apply(key, proxiedMap.get(key));
+        else
+            return proxiedMap.get(key);
     }
 
     /*
@@ -76,66 +75,75 @@ public class FlexiMap implements Map<Object, Object> {
      * Since put returns the previously associated value,
      * we'll invoke onGet here as well.
      */
-    public Object put(Object key, Object value) {
+    @Override
+    public Object put(final Object key, final Object value) {
         final Object oldvalue = proxiedMap.get(key);
-        if (onPut != null)
-        	proxiedMap.put(key, onPut.apply(oldvalue, value));
+        if (onPut.isPresent())
+            proxiedMap.put(key, onPut.get().apply(oldvalue, value));
         else
-        	proxiedMap.put(key, value);
-        
-        if (onGet != null)
-        	return onGet.apply(key,oldvalue);
+            proxiedMap.put(key, value);
+
+        if (onGet.isPresent())
+            return onGet.get().apply(key, oldvalue);
         else
-        	return oldvalue;
+            return oldvalue;
     }
 
    /*
     * We'll skip the remaining Map methods for now.
     */
 
+    @Override
     public void clear() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    public boolean containsKey(Object key) {
+    @Override
+    public boolean containsKey(final Object key) {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    public boolean containsValue(Object value) {
+    @Override
+    public boolean containsValue(final Object value) {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
+    @Override
     public Set<Map.Entry<Object, Object>> entrySet() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
+    @Override
     public boolean isEmpty() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
+    @Override
     public Set<Object> keySet() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    public void putAll(Map<?, ?> t) {
+    @Override
+    public void putAll(final Map<?, ?> t) {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    public Object remove(Object key) {
+    @Override
+    public Object remove(final Object key) {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
+    @Override
     public int size() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
+    @Override
     public Collection<Object> values() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    // private BinaryFunction<Object, Object, Object> onPut = null;
-    final private Closure onPut;
-    // private BinaryFunction<Object, Object, Object> onGet = null;
-    final private Closure onGet;
+    final private Option<Closure> onPut;
+    final private Option<Closure> onGet;
     final private Map<Object, Object> proxiedMap;
 }

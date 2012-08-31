@@ -19,11 +19,8 @@
 
 package org.howardism.options;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.howardism.options.None;
-import org.howardism.options.Option;
-import org.howardism.options.Some;
 import org.junit.Test;
 
 /**
@@ -45,7 +42,7 @@ public class SomeTests {
 		assertEquals(6, someFunc( new Some<Integer>(5) ) );
 	}
 
-	public int someFunc(Option<Integer> p1) {
+	public int someFunc(final Option<Integer> p1) {
 		return p1.get(0) + 1;
 	}
 }
