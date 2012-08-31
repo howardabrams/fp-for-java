@@ -59,7 +59,6 @@ public class FlexiMap implements Map<Object, Object> {
      * underlying Map.  We'll return whatever the function
      * returns.
      */
-    @Override
     public Object get(final Object key) {
         if (onGet.isPresent())
             return onGet.get().apply(key, proxiedMap.get(key));
@@ -75,7 +74,6 @@ public class FlexiMap implements Map<Object, Object> {
      * Since put returns the previously associated value,
      * we'll invoke onGet here as well.
      */
-    @Override
     public Object put(final Object key, final Object value) {
         final Object oldvalue = proxiedMap.get(key);
         if (onPut.isPresent())
@@ -93,52 +91,42 @@ public class FlexiMap implements Map<Object, Object> {
     * We'll skip the remaining Map methods for now.
     */
 
-    @Override
     public void clear() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public boolean containsKey(final Object key) {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public boolean containsValue(final Object value) {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public Set<Map.Entry<Object, Object>> entrySet() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public boolean isEmpty() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public Set<Object> keySet() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public void putAll(final Map<?, ?> t) {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public Object remove(final Object key) {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public int size() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
 
-    @Override
     public Collection<Object> values() {
         throw new UnsupportedOperationException("Left as an exercise for the reader.");
     }
