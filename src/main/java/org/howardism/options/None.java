@@ -36,15 +36,6 @@ public class None<T> implements Option<T>
 	public static None<Object> noparameter = new None<Object>();
 	
 	/**
-	 * Gets an instance of this class in case we really want to pretend were still
-	 * living in an imperative world.
-	 * @return The <code>noparameter</code> singleton instance.
-	 */
-	public static None<Closure> noclosure() {
-		return new None<Closure>();
-	}
-	
-	/**
 	 * Always returns <code>false</code>, since this class means no value available.
 	 * @see org.howardism.options.Option#isPresent()
 	 */
