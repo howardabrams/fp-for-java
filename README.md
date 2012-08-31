@@ -14,16 +14,16 @@ In order to get rid of the dreaded null pointer exceptions, you can
 have a function accept parameters of type [Option][]. Only two classes
 implement this interface: `None` and `Some`.
 
- * [None][]: returns `false` when `present()` function is called.
- * [Some][]: returns `true` when `present()` called, and returns results from `values()`
+ * [None][]: returns `false` when `isPresent()` function is called.
+ * [Some][]: returns `true` when `isPresent()` called, and returns results from `values()`
 
 We can then have a function like:
  
     public FlexiMap( Option<Closure> putfn, Option<Closure> getfn ) {
-      if(putfn.present())
-        onPut = putfn.value();
-      if(getfn.present())
-        onGet = getfn.value();
+      if(putfn.isPresent())
+        onPut = putfn.get();
+      if(getfn.isPresent())
+        onGet = getfn.get();
       // ...
     }
 
