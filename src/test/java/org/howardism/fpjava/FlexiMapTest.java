@@ -270,6 +270,7 @@ public class FlexiMapTest
      * with a key adds to that collection, rather than overwriting the
      * previous value:
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testMultiMap() {
         final Map<Object, Object> map = makeMultiMap();
