@@ -28,8 +28,9 @@ public class SetUtils {
 	
     /**
      * Combines two sets into one.
+     * @param <T>
      */
-    public static Set<T> union(final Set<T> a, final Set<T> b) {
+    public static <T> Set<T> union(final Set<T> a, final Set<T> b) {
         return new Set<T>() {
             public boolean has(final T n) {
                 return a.has(n) || b.has(n);
@@ -37,10 +38,18 @@ public class SetUtils {
         };
     }
 
-    public static Set<T> intersection(final Set<T> a, final Set<T> b) {
+    public static <T> Set<T> intersection(final Set<T> a, final Set<T> b) {
         return new Set<T>() {
             public boolean has(final T n) {
                 return a.has(n) && b.has(n);
+            }
+        };
+    }
+
+    public static <T> Set<T> diff(final Set<T> a, final Set<T> b) {
+        return new Set<T>() {
+            public boolean has(final T n) {
+                return a.has(n) && ! b.has(n);
             }
         };
     }

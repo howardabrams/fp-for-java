@@ -28,7 +28,7 @@ import org.junit.Test;
  *
  */
 
-public SetTests {
+public class SetTests {
 
     /**
      * We can create a set with a single element in it with this.
@@ -44,7 +44,7 @@ public SetTests {
      */
     public static Set<Integer> evens() {
         return new Set<Integer>() {
-            public boolean has(final int n) { return n % 2 == 0; }
+            public boolean has(final Integer n) { return n % 2 == 0; }
         };
     }
 
@@ -53,7 +53,7 @@ public SetTests {
      */
     public static Set<Integer> odds() {
         return new Set<Integer>() {
-            public boolean has(final int n) { return n % 2 == 1; }
+            public boolean has(final Integer n) { return n % 2 == 1; }
         };
     }
 
@@ -63,8 +63,26 @@ public SetTests {
         final Set<Integer> s2 = singleton(2);
         final Set<Integer> sT = SetUtils.union(s1, s2);
 
-        assert (sT.has(1))
-        assert (sT.has(2))
-        assert (!sT.has(3))
+        assertTrue (sT.has(1));
+        assertTrue (sT.has(2));
+        assertTrue (!sT.has(3));
+    }
+
+    @Test
+    public void testIntersection() {
+        final Set<Integer> s2 = singleton(2);
+        final Set<Integer> sT = SetUtils.intersection(evens(), s2);
+
+        assertTrue (sT.has(2));
+        assertTrue (!sT.has(4));
+    }
+
+    @Test
+    public void testDiff() {
+        final Set<Integer> s2 = singleton(2);
+        final Set<Integer> sT = SetUtils.diff(evens(), s2);
+
+        assertTrue (!sT.has(2));
+        assertTrue ( sT.has(4));
     }
 }
