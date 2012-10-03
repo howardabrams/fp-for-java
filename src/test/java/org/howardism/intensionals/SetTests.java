@@ -85,4 +85,46 @@ public class SetTests {
         assertTrue (!sT.has(2));
         assertTrue ( sT.has(4));
     }
+    
+    /**
+     * We test to see if we can gather a few even numbers from iterate.
+     */
+    @Test
+    public void testIterator() {
+        StringBuffer buf = new StringBuffer();
+        Set<Integer> evens = evens();
+        for ( Integer n : SetUtils.iterate(evens, 0, 4) ) {
+            buf.append(n);
+            buf.append(", ");
+        }
+        assertEquals("0, 2, ", buf.toString());  // Range is inclusive.
+    }
+
+    /**
+     * We test to see if we can gather a few even numbers from iterate.
+     */
+    @Test
+    public void testIteratorUpperBounds() {
+        StringBuffer buf = new StringBuffer();
+        Set<Integer> evens = evens();
+        for ( Integer n : SetUtils.iterate(evens, 0, 5) ) {
+            buf.append(n);
+            buf.append(", ");
+        }
+        assertEquals("0, 2, 4, ", buf.toString());  // Range is inclusive.
+    }
+
+    /**
+     * We test to see if we can gather a few even numbers from iterate.
+     */
+    @Test
+    public void testIteratorLowerBounds() {
+        StringBuffer buf = new StringBuffer();
+        Set<Integer> evens = evens();
+        for ( Integer n : SetUtils.iterate(evens, -1, 4) ) {
+            buf.append(n);
+            buf.append(", ");
+        }
+        assertEquals("0, 2, ", buf.toString());  // Range is inclusive.
+    }
 }
