@@ -42,6 +42,11 @@ public class SomeTests {
 		assertEquals(6, someFunc( new Some<Integer>(5) ) );
 	}
 
+	@Test
+	public void testSomething() {
+	    assertEquals(9, someFunc( Some.thing(5) ) );
+	}
+
 	public int someFunc(final Option<Integer> p1) {
 		return p1.get(0) + 1;
 	}

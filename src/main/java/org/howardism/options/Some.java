@@ -69,4 +69,24 @@ public class Some<T> implements Option<T>
     public T get() {
         return value;
     }
+
+    /**
+     * Syntactic sugar for creating a <code>Some</code> instance.
+     * For example, if a function took an {@link Option}, you could pass:
+     * <pre>
+     *    logMessage ( Some.thing("blah blah") );
+     * </pre>
+     * The advantage that this function has, is that you don't have to specify
+     * the type. The above example is equivalent to:
+     * <pre>
+     *    logMessage ( new Some<String>("blah blah") );
+     * </pre>
+     * The other advantage is that seems a little clearer.
+     *
+     * @param c  An object to wrap as an Option
+     * @return   A Some instance containing the value
+     */
+    public static <S> Option<S> thing(S c) {
+        return new Some<S>(c);
+    }
 }
