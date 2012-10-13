@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.howardism.options.None;
+import org.howardism.options.Option;
+import org.howardism.options.Some;
 import org.junit.Test;
 
 /**
@@ -52,7 +54,9 @@ import org.junit.Test;
  */
 public class FlexiMapTest
 {
-    /* In a "test first" style, let's first specify the Map behaviour we'd like
+    final static Option<Closure> noClosure = None.thing(); // new None<Closure>();
+
+    /* In a "test first" style, let's first specify the Map behavior we'd like
      * to implement via unit tests.
      *
      * First, let's review the basic Map functionality.
@@ -70,7 +74,7 @@ public class FlexiMapTest
     }
 
     private Map<Object, Object> makeBasicMap() {
-        return new FlexiMap( None.noClosure, None.noClosure );
+        return new FlexiMap( noClosure, noClosure );
     }
 
     /*
@@ -150,11 +154,11 @@ public class FlexiMapTest
     }
 
     private Map<Object, Object> makeNullForbiddenMap() {
-        return new FlexiMap( new NoMoreNulls().asOption(),  /* put */
-                             None.noClosure );              /* get */
+        return new FlexiMap( Some.thing(noMoreNulls),  // put
+                             noClosure );              // get
     }
 
-    private class NoMoreNulls extends ClosureOption {
+    final Closure noMoreNulls = new Closure() {
 
         public Object apply(final Object... objects) {
             // All closures used for 'putFn' will have two parameters:
@@ -167,7 +171,7 @@ public class FlexiMapTest
             else
                 return objects[1];
         }
-    }
+    };
 
     /*
      * Alternatively, we may want to provide a default
@@ -178,43 +182,39 @@ public class FlexiMapTest
      */
     @Test
     public void testNullDefaultsToZero() {
-        final Map<Object, Object> map = makeDefaultValueForNullMap(new Integer(0));
+        final Map<Object, Object> map = makeDefaultValueForNullMap(0);
         /*
          * We expect 0 when no value has been associated with "key".
          */
-        assertEquals( new Integer(0), map.get("key") );
+        assertEquals(0, map.get("key") );
         /*
          * We also expect 0 when a null value has been associated with "key".
          */
         map.put("key", null);
-        assertEquals( new Integer(0), map.get("key") );
+        assertEquals(0, map.get("key") );
     }
 
     private Map<Object, Object> makeDefaultValueForNullMap(final Integer integer) {
-        return new FlexiMap( None.noClosure,                                // put
-                             new DefaultValueForNull(integer).asOption() ); // get
+
+        final Closure defaultValueForNull = new Closure() {
+
+            public Object apply(final Object... objects) {
+                // All closures used for 'getFn' will have two parameters:
+                //    0: key
+                //    1: value currently stored in the map
+                assert objects.length == 2;
+
+                if (objects[1] == null)
+                    return integer;
+                else
+                    return objects[1];
+            }
+        };
+
+        return new FlexiMap( noClosure,                         // put
+                             Some.thing(defaultValueForNull) ); // get
     }
 
-    private class DefaultValueForNull extends ClosureOption {
-        final Object defaultValue;
-
-        public DefaultValueForNull(final Object value) {
-            this.defaultValue = value;
-        }
-
-        public Object apply(final Object... objects) {
-            // All closures used for 'getFn' will have two parameters:
-            //    0: key
-            //    1: value currently stored in the map
-            assert objects.length == 2;
-
-            if (objects[1] == null)
-                return defaultValue;
-            else
-                return objects[1];
-        }
-
-    }
 
     
     /*
@@ -234,31 +234,26 @@ public class FlexiMapTest
         }
     }
 
-    private Map<Object, Object> makeTypeConstrainedMap(final Class<Integer> class1) {
-        return new FlexiMap( new ConstrainedPut(class1).asOption(), // put
-                             None.noClosure );                      // get
+    private Map<Object, Object> makeTypeConstrainedMap(final Class<Integer> constraint) {
+        final Closure constrainedPut = new Closure() {
+
+            public Object apply(final Object... objects) {
+                // All closures used for 'putFn' will have two parameters:
+                //    0: old value
+                //    1: new value
+                assert objects.length == 2;
+
+                if (objects[1].getClass() != constraint)
+                    throw new ClassCastException("This map implementation only allows values of type: "+constraint.getName());
+                else
+                    return objects[1];
+            }
+        };
+
+        return new FlexiMap( Some.thing(constrainedPut), // put
+                             noClosure );                // get
     }
 
-    class ConstrainedPut extends ClosureOption {
-        final Class<?> constraint;
-
-        public ConstrainedPut(final Class<Integer> c) {
-            this.constraint = c;
-        }
-
-        public Object apply(final Object... objects) {
-            // All closures used for 'putFn' will have two parameters:
-            //    0: old value
-            //    1: new value
-            assert objects.length == 2;
-
-            if (objects[1].getClass() != constraint)
-                throw new ClassCastException("This map implementation only allows values of type: "+constraint.getName());
-            else
-                return objects[1];
-        }
-
-    }
 
 
     /*
@@ -307,29 +302,29 @@ public class FlexiMapTest
     }
 
     private Map<Object, Object> makeMultiMap() {
-        return new FlexiMap( new MultiMapPut().asOption(), // put
-                             None.noClosure );              // get
+        final Closure multiMapPut = new Closure() {
+            @SuppressWarnings("unchecked")
+            public Object apply(final Object... objects) {
+                // All closures used for 'putFn' will have two parameters:
+                //    0: The map for the current key (or null if new)
+                //    1: The value to store...
+                assert objects.length == 2;
+
+                final List<Object> values;
+                if (objects[0] == null)
+                    values = new ArrayList<Object>();
+                else
+                    values = (List<Object>) objects[0];
+
+                values.add( objects[1] );
+                return values;
+            }
+        };
+
+        return new FlexiMap( Some.thing(multiMapPut), // put
+                             noClosure );             // get
     }
 
-    class MultiMapPut extends ClosureOption {
-        @SuppressWarnings("unchecked")
-        public Object apply(final Object... objects) {
-            // All closures used for 'putFn' will have two parameters:
-            //    0: The map for the current key (or null if new)
-            //    1: The value to store...
-            assert objects.length == 2;
-
-            final List<Object> values;
-            if (objects[0] == null)
-                values = new ArrayList<Object>();
-            else
-                values = (List<Object>) objects[0];
-
-            values.add( objects[1] );
-            return values;
-        }
-
-    }
 
     /*
      * Here's another variation on the MultiMap theme.
@@ -350,27 +345,26 @@ public class FlexiMapTest
     }
 
     private Map<Object, Object> makeStringConcatMap() {
-        return new FlexiMap( new MultiStringPut().asOption(), // put
-                             None.noClosure );                 // get
+
+        final Closure multiStringPut = new Closure() {
+
+            public Object apply(final Object... objects) {
+                // All closures used for 'putFn' will have two parameters:
+                //    0: The string of values (or null if empty)
+                //    1: The value to store...
+                assert objects.length == 2;
+
+                final String slist;
+                if (objects[0] == null)          // First time in, we
+                    slist = (String) objects[1]; // just store the value
+                else                             // Next time, we append
+                    slist = (String) objects[0] + ", " + (String) objects[1];
+
+                return slist;
+            }
+        };
+
+        return new FlexiMap( Some.thing(multiStringPut), // put
+                             noClosure );                // get
     }
-
-    class MultiStringPut extends ClosureOption {
-
-        public Object apply(final Object... objects) {
-            // All closures used for 'putFn' will have two parameters:
-            //    0: The string of values (or null if empty)
-            //    1: The value to store...
-            assert objects.length == 2;
-
-            final String slist;
-            if (objects[0] == null)          // First time in, we
-                slist = (String) objects[1]; // just store the value
-            else                             // Next time, we append
-                slist = (String) objects[0] + ", " + (String) objects[1];
-
-            return slist;
-        }
-
-    }
-
 }
