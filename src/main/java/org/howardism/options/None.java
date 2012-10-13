@@ -19,7 +19,6 @@
 
 package org.howardism.options;
 
-import org.howardism.fpjava.Closure;
 
 /**
  * A parameter that isn't set is called <b>None</b> (see also the {@link Some}
@@ -66,6 +65,25 @@ public class None<T> implements Option<T>
     }
 
     /**
+     * Syntactic sugar for creating a <code>None</code> instance without
+     * needing to specify the type.
+     * For example, if a function took an {@link Option}, you could pass:
+     * <pre>
+     *    logMessage ( None.thing() );
+     * </pre>
+     * The above example is equivalent to:
+     * <pre>
+     *    logMessage ( new None<String>() );
+     * </pre>
+     * The other advantage is that seems a little clearer.
+     *
+     * @return   A None instance
+     */
+    public static <S> Option<S> thing() {
+        return new None<S>();
+    }
+
+    /**
      * Convenience object that can be easily used in function calls.
      */
     public static None<Integer> noInteger = new None<Integer>();
@@ -74,5 +92,5 @@ public class None<T> implements Option<T>
     public static None<Short>   noShort   = new None<Short>();
     public static None<String>  noString  = new None<String>();
     public static None<Object>  noObject  = new None<Object>();
-    public static None<Closure> noClosure = new None<Closure>();
+
 }
