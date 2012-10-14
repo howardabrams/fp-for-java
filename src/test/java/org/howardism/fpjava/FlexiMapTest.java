@@ -139,18 +139,13 @@ public class FlexiMapTest
      * One common specialization is to forbid null values,
      * like our old friend Hashtable:
      */
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testForbidNull() {
         final Map<Object, Object> map = makeNullForbiddenMap();
 
         map.put("key","value");
         map.put("key2", new Integer(2) );
-        try {
-            map.put("key3",null);
-            fail("Expected NullPointerException");
-        } catch(final NullPointerException e) {
-            // expected
-        }
+        map.put("key3",null);
     }
 
     private Map<Object, Object> makeNullForbiddenMap() {
